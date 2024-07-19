@@ -1,0 +1,117 @@
+{
+  "hotels": [
+    {
+      "id": 1,
+      "name": "Seaside Resort",
+      "location": "Miami Beach, FL",
+      "image": "https://example.com/seaside-resort.jpg",
+      "price": 250,
+      "rating": 4.5,
+      "amenities": ["Pool", "Beach Access", "Free WiFi", "Spa", "Fitness Center"],
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 250,
+          "capacity": 2
+        },
+        {
+          "type": "Deluxe",
+          "price": 350,
+          "capacity": 3
+        },
+        {
+          "type": "Suite",
+          "price": 500,
+          "capacity": 4
+        }
+      ],
+      "reviews": [
+        {
+          "user": "John D.",
+          "rating": 5,
+          "comment": "Beautiful resort with excellent service!"
+        },
+        {
+          "user": "Sarah M.",
+          "rating": 4,
+          "comment": "Great location, but rooms could use updating."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "City Center Hotel",
+      "location": "New York, NY",
+      "image": "https://example.com/city-center-hotel.jpg",
+      "price": 300,
+      "rating": 4.2,
+      "amenities": ["Free WiFi", "Restaurant", "Business Center", "Gym"],
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 300,
+          "capacity": 2
+        },
+        {
+          "type": "Executive",
+          "price": 450,
+          "capacity": 2
+        }
+      ],
+      "reviews": [
+        {
+          "user": "Emily R.",
+          "rating": 4,
+          "comment": "Perfect location for business travelers."
+        },
+        {
+          "user": "Michael T.",
+          "rating": 5,
+          "comment": "Exceptional service and comfortable rooms."
+        }
+      ]
+    }
+  ],
+  "bookings": [
+    {
+      "id": 1,
+      "userId": 1,
+      "hotelId": 1,
+      "roomType": "Deluxe",
+      "checkIn": "2024-08-15",
+      "checkOut": "2024-08-20",
+      "guests": 2,
+      "totalPrice": 1750
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "favorites": [1, 2]
+    }
+  ],
+  "locations": [
+    {
+      "id": 1,
+      "name": "Miami Beach, FL"
+    },
+    {
+      "id": 2,
+      "name": "New York, NY"
+    },
+    {
+      "id": 3,
+      "name": "Aspen, CO"
+    },
+    {
+      "id": 4,
+      "name": "Los Angeles, CA"
+    },
+    {
+      "id": 5,
+      "name": "Chicago, IL"
+    }
+  ]
+}

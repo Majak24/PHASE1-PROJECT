@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Hotel Booking App</h1>
+    </header>
+    <main>
+        <section id="search">
+            <h2>Search Hotels</h2>
+            <form id="search-form">
+                <input type="text" id="location" placeholder="Enter location" required>
+                <input type="date" id="check-in" required>
+                <input type="date" id="check-out" required>
+                <input type="number" id="guests" min="1" max="10" value="1" required>
+                <button type="submit">Search</button>
+            </form>
+        </section>
+        <section id="hotel-list">
+            <h2>Available Hotels</h2>
+            <div id="hotels-container"></div>
+        </section>
+        <section id="favorites">
+            <h2>Your Favorites</h2>
+            <ul id="favorites-list"></ul>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
