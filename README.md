@@ -47,7 +47,7 @@ Copy
 PHASE1-PROJECT/
 │
 ├── index.html
-├── styles.css
+├── style.css
 ├── script.js
 ├── db.json
 └── README.md
@@ -89,7 +89,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Contact
 
-Your Name - your.email@example.com
+Majak Deng - majakbanks.deng@icloud.com
 
 Project Link: [https://github.com/majak24/hotel-booking-app](https://github.com/your-username/hotel-booking-app)
 This README provides:
