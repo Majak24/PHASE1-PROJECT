@@ -1,13 +1,19 @@
 {
   "hotels": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Seaside Resort",
-      "location": "Miami Beach, FL",
-      "image": "https://example.com/seaside-resort.jpg",
+      "locationId": "1",
+      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
       "price": 250,
       "rating": 4.5,
-      "amenities": ["Pool", "Beach Access", "Free WiFi", "Spa", "Fitness Center"],
+      "amenities": [
+        "Pool",
+        "Beach Access",
+        "Free WiFi",
+        "Spa",
+        "Fitness Center"
+      ],
       "rooms": [
         {
           "type": "Standard",
@@ -27,25 +33,30 @@
       ],
       "reviews": [
         {
-          "user": "John D.",
+          "userId": "1",
           "rating": 5,
           "comment": "Beautiful resort with excellent service!"
         },
         {
-          "user": "Sarah M.",
+          "userId": "2",
           "rating": 4,
           "comment": "Great location, but rooms could use updating."
         }
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "City Center Hotel",
-      "location": "New York, NY",
-      "image": "https://example.com/city-center-hotel.jpg",
+      "locationId": "2",
+      "image": "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
       "price": 300,
       "rating": 4.2,
-      "amenities": ["Free WiFi", "Restaurant", "Business Center", "Gym"],
+      "amenities": [
+        "Free WiFi",
+        "Restaurant",
+        "Business Center",
+        "Gym"
+      ],
       "rooms": [
         {
           "type": "Standard",
@@ -60,23 +71,43 @@
       ],
       "reviews": [
         {
-          "user": "Emily R.",
+          "userId": "3",
           "rating": 4,
           "comment": "Perfect location for business travelers."
         },
         {
-          "user": "Michael T.",
+          "userId": "4",
           "rating": 5,
           "comment": "Exceptional service and comfortable rooms."
         }
       ]
+    },
+    {
+      "id": "3",
+      "name": "Budget Inn",
+      "locationId": "2",
+      "image": "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+      "price": 50,
+      "rating": 3.5,
+      "amenities": [
+        "Free WiFi",
+        "Parking"
+      ],
+      "rooms": [
+        {
+          "type": "Standard",
+          "price": 50,
+          "capacity": 2
+        }
+      ],
+      "reviews": []
     }
   ],
   "bookings": [
     {
-      "id": 1,
-      "userId": 1,
-      "hotelId": 1,
+      "id": "1",
+      "userId": "1",
+      "hotelId": "1",
       "roomType": "Deluxe",
       "checkIn": "2024-08-15",
       "checkOut": "2024-08-20",
@@ -86,32 +117,50 @@
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Alice Johnson",
       "email": "alice@example.com",
-      "favorites": [1, 2]
+      "favorites": []
+    },
+    {
+      "id": "2",
+      "name": "Sarah M.",
+      "email": "sarah@example.com",
+      "favorites": []
+    },
+    {
+      "id": "3",
+      "name": "Emily R.",
+      "email": "emily@example.com",
+      "favorites": []
+    },
+    {
+      "id": "4",
+      "name": "Michael T.",
+      "email": "michael@example.com",
+      "favorites": []
     }
   ],
   "locations": [
     {
-      "id": 1,
-      "name": "Miami Beach, FL"
+      "id": "1",
+      "name": "Cape Town"
     },
     {
-      "id": 2,
-      "name": "New York, NY"
+      "id": "2",
+      "name": "Nairobi"
     },
     {
-      "id": 3,
-      "name": "Aspen, CO"
+      "id": "3",
+      "name": "Kampala"
     },
     {
-      "id": 4,
-      "name": "Los Angeles, CA"
+      "id": "4",
+      "name": "Arusha"
     },
     {
-      "id": 5,
-      "name": "Chicago, IL"
+      "id": "5",
+      "name": "New York"
     }
   ]
 }

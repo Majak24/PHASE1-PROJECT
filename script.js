@@ -1,5 +1,3 @@
-// script.js
-
 const API_URL = 'http://localhost:3000';
 
 // DOM Elements
@@ -12,19 +10,12 @@ const locationInput = document.getElementById('location');
 searchForm.addEventListener('submit', handleSearch);
 document.addEventListener('DOMContentLoaded', initializeApp);
 
-// Hotel Images
-const hotelImages = [
-    "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-    "https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1332&q=80",
-    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-    "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=749&q=80"
-];
-
-// Functions
 async function initializeApp() {
     await loadLocations();
     await renderFavorites();
+    // Load all hotels initially
+    const hotels = await fetchHotels();
+    renderHotels(hotels);
 }
 
 async function loadLocations() {
@@ -33,7 +24,7 @@ async function loadLocations() {
     datalist.id = 'locations-list';
     locations.forEach(location => {
         const option = document.createElement('option');
-        option.value = location;
+        option.value = location.name;
         datalist.appendChild(option);
     });
     locationInput.setAttribute('list', 'locations-list');
@@ -43,8 +34,7 @@ async function loadLocations() {
 async function fetchLocations() {
     try {
         const response = await fetch(`${API_URL}/locations`);
-        const locations = await response.json();
-        return locations.map(location => location.name);
+        return await response.json();
     } catch (error) {
         console.error('Error fetching locations:', error);
         return [];
@@ -54,59 +44,94 @@ async function fetchLocations() {
 async function handleSearch(e) {
     e.preventDefault();
     const location = locationInput.value;
-    const checkIn = document.getElementById('check-in').value;
-    const checkOut = document.getElementById('check-out').value;
-    const guests = document.getElementById('guests').value;
-
     const hotels = await fetchHotels(location);
     renderHotels(hotels);
 }
 
-async function fetchHotels(location) {
+async function fetchHotels(location = '') {
     try {
-        const response = await fetch(`${API_URL}/hotels?location=${location}`);
-        return await response.json();
+        let url = `${API_URL}/hotels`;
+        if (location) {
+            const locationObj = await getLocationByName(location);
+            if (locationObj) {
+                url += `?locationId=${locationObj.id}`;
+            }
+        }
+        const response = await fetch(url);
+        const hotels = await response.json();
+        console.log('Fetched hotels:', hotels); // Debug log
+        return hotels;
     } catch (error) {
         console.error('Error fetching hotels:', error);
         return [];
     }
 }
 
-function renderHotels(hotels) {
+async function getLocationByName(locationName) {
+    try {
+        const response = await fetch(`${API_URL}/locations?name=${encodeURIComponent(locationName)}`);
+        const locations = await response.json();
+        return locations[0];
+    } catch (error) {
+        console.error('Error fetching location:', error);
+        return null;
+    }
+}
+
+async function renderHotels(hotels) {
     hotelsContainer.innerHTML = '';
     if (hotels.length === 0) {
         hotelsContainer.innerHTML = '<p>No hotels found. Try a different location.</p>';
         return;
     }
-    hotels.forEach((hotel, index) => {
-        const hotelCard = createHotelCard(hotel, index);
+    for (const hotel of hotels) {
+        const hotelCard = await createHotelCard(hotel);
         hotelsContainer.appendChild(hotelCard);
-    });
+    }
 }
 
-function createHotelCard(hotel, index) {
+async function createHotelCard(hotel) {
+    console.log('Creating card for hotel:', hotel);  // Debug log
     const card = document.createElement('div');
     card.classList.add('hotel-card');
+    const isFav = await isFavorite(hotel.id);
     card.innerHTML = `
-        <img src="${hotelImages[index % hotelImages.length]}" alt="${hotel.name}">
-        <h3>${hotel.name}</h3>
-        <p>Location: ${hotel.location}</p>
-        <p>Price: $${hotel.price}/night</p>
-        <p>Rating: ${hotel.rating}/5</p>
-        <button class="favorite-btn" data-id="${hotel.id}">
-            ${isFavorite(hotel.id) ? 'Remove from Favorites' : 'Add to Favorites'}
-        </button>
+        <img src="${hotel.image}" alt="${hotel.name}" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200?text=No+Image'; console.log('Image failed to load:', this.src);">
+        <div class="hotel-card-content">
+            <h3>${hotel.name}</h3>
+            <p>Location: ${await getLocationName(hotel.locationId) || 'Unknown'}</p>
+            <p>Price: $${hotel.price}/night</p>
+            <p>Rating: ${hotel.rating}/5</p>
+            <div class="card-buttons">
+                <button class="favorite-btn" data-id="${hotel.id}">
+                    ${isFav ? 'Remove from Favorites' : 'Add to Favorites'}
+                </button>
+                <button class="book-now-btn" data-id="${hotel.id}">Book Now</button>
+            </div>
+        </div>
     `;
     card.querySelector('.favorite-btn').addEventListener('click', toggleFavorite);
+    card.querySelector('.book-now-btn').addEventListener('click', bookHotel);
     return card;
 }
 
+async function getLocationName(locationId) {
+    try {
+        const response = await fetch(`${API_URL}/locations/${locationId}`);
+        const location = await response.json();
+        return location.name;
+    } catch (error) {
+        console.error('Error fetching location:', error);
+        return null;
+    }
+}
+
 async function toggleFavorite(e) {
-    const hotelId = parseInt(e.target.dataset.id);
+    const hotelId = e.target.dataset.id;
     const userId = 1; // Assuming user with ID 1 is logged in
     let user = await fetchUser(userId);
     
-    if (isFavorite(hotelId)) {
+    if (user.favorites.includes(hotelId)) {
         user.favorites = user.favorites.filter(id => id !== hotelId);
         e.target.textContent = 'Add to Favorites';
     } else {
@@ -115,20 +140,19 @@ async function toggleFavorite(e) {
     }
     
     await updateUser(user);
-    renderFavorites();
+    await renderFavorites();
 }
 
-function isFavorite(hotelId) {
-    const user = JSON.parse(localStorage.getItem('user'));
-    return user && user.favorites.includes(hotelId);
+async function isFavorite(hotelId) {
+    const userId = 1; // Assuming user with ID 1 is logged in
+    const user = await fetchUser(userId);
+    return user.favorites.includes(hotelId);
 }
 
 async function fetchUser(userId) {
     try {
         const response = await fetch(`${API_URL}/users/${userId}`);
-        const user = await response.json();
-        localStorage.setItem('user', JSON.stringify(user));
-        return user;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching user:', error);
         return null;
@@ -137,31 +161,64 @@ async function fetchUser(userId) {
 
 async function updateUser(user) {
     try {
-        await fetch(`${API_URL}/users/${user.id}`, {
+        const response = await fetch(`${API_URL}/users/${user.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
         });
-        localStorage.setItem('user', JSON.stringify(user));
+        if (!response.ok) {
+            throw new Error('Failed to update user on server');
+        }
     } catch (error) {
         console.error('Error updating user:', error);
+        throw error;
     }
 }
 
 async function renderFavorites() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = 1; // Assuming user with ID 1 is logged in
+    const user = await fetchUser(userId);
     if (!user) return;
 
     favoritesList.innerHTML = '';
+    
+    if (user.favorites.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = "You haven't added any favorites yet.";
+        favoritesList.appendChild(li);
+        return;
+    }
+
     for (const hotelId of user.favorites) {
         const hotel = await fetchHotel(hotelId);
         if (hotel) {
             const li = document.createElement('li');
-            li.textContent = hotel.name;
+            li.innerHTML = `
+                ${hotel.name}
+                <button class="delete-favorite" data-id="${hotel.id}">Delete</button>
+            `;
+            li.querySelector('.delete-favorite').addEventListener('click', deleteFavorite);
             favoritesList.appendChild(li);
         }
+    }
+}
+
+async function deleteFavorite(e) {
+    const hotelId = e.target.dataset.id;
+    const userId = 1; // Assuming user with ID 1 is logged in
+    let user = await fetchUser(userId);
+    
+    user.favorites = user.favorites.filter(id => id !== hotelId);
+    
+    await updateUser(user);
+    await renderFavorites();
+
+    // Update the "Add to Favorites" button if the hotel is currently displayed
+    const favoriteBtn = document.querySelector(`.favorite-btn[data-id="${hotelId}"]`);
+    if (favoriteBtn) {
+        favoriteBtn.textContent = 'Add to Favorites';
     }
 }
 
@@ -173,6 +230,12 @@ async function fetchHotel(hotelId) {
         console.error('Error fetching hotel:', error);
         return null;
     }
+}
+
+function bookHotel(e) {
+    const hotelId = e.target.dataset.id;
+    console.log(`Booking hotel with ID: ${hotelId}`);
+    alert(`Booking process initiated for hotel ID: ${hotelId}`);
 }
 
 // Initialize the app
